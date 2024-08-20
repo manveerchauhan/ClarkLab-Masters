@@ -4,10 +4,12 @@
 # ./rarefyMatchedFastQs.sh <fast_q file> <output_prefix> <sampling_rate_1> <sampling_rate_2>...etc
 # **Make sure bbmap is installed in the current conda environment**
 
-# Specify your FASTQ file from the user argument
 # Define array of sampling rates
 sample_rates=(0.75 0.50 0.25 0.10)
+# Define the seed for reproducibility
+seed=42
 
+# Define global variables from user-entered parameters
 fastq_file="$1"
 output_prefix="$2"
 readNumberTrackerFile="${output_prefix}_readRarePoints.txt"
@@ -40,7 +42,7 @@ for rate in "${sample_rates[@]}"; do
     output_file="${output_prefix}_${rate//./}percent.fastq"
 
     # Subsample the FASTQ file using reformat.sh with the current sample rate
-    reformat.sh in="$fastq_file" out="$output_file" samplerate="$rate"
+    reformat.sh in="$fastq_file" out="$output_file" samplerate="$rate" sampleseed="$seed"
 
     # Calculate the number of reads in the subsampled FASTQ file
     reads_sample_rate=$(calculate_total_reads "$output_file")
